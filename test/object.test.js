@@ -92,5 +92,60 @@ describe('test/object.test.js', function () {
       expect(objectSet({}, 2, 3)).to.deep.equal({ 2: 3 });
       expect(objectSet({}, 'a.2', 3)).to.deep.equal({ a: { 2: 3 } });
     });
+
+    it('can handle pushing into a nested array', function () {
+      const src = { foo: [] };
+      expect(objectSet(src, 'foo.[].stuff', 3)).to.deep.equal({ foo: [{ stuff: 3 }] });
+      objectSet(src, 'foo.[].bar', 2);
+      expect(src).to.deep.equal({ foo: [{ stuff: 3 }, { bar: 2 }] });
+      objectSet(src, 'foo.0.bar', 8);
+      expect(src).to.deep.equal({ foo: [{ stuff: 3, bar: 8 }, { bar: 2 }] });
+    });
+
+    it('can handle pushing into a root array', function () {
+      const src = [];
+      objectSet(src, '[].foo', 1);
+      objectSet(src, '[].foo', 3);
+      objectSet(src, '[].foo', 2);
+      expect(src).to.deep.equal([
+        { foo: 1 },
+        { foo: 3 },
+        { foo: 2 },
+      ]);
+    });
+
+    it('can handle pushing into an end array', function () {
+      const src = { };
+      objectSet(src, 'foo.[]', 4);
+      objectSet(src, 'foo.[]', 6);
+      objectSet(src, 'foo.[]', 2);
+      expect(src).to.deep.equal({
+        foo: [4, 6, 2],
+      });
+    });
+
+    it('can handle creating a new array', function () {
+      const src = { };
+      objectSet(src, 'foo.[].bar', 3);
+      objectSet(src, 'foo.[].bar', 1);
+      objectSet(src, 'foo.[].bar', 0);
+      expect(src).to.deep.equal({
+        foo: [
+          { bar: 3 },
+          { bar: 1 },
+          { bar: 0 },
+        ],
+      });
+    });
+
+    it('can handle double array', function () {
+      const src = { };
+      objectSet(src, 'foo.[].[]', 1);
+      objectSet(src, 'foo.[].[]', 3);
+      objectSet(src, 'foo.[].[]', 9);
+      expect(src).to.deep.equal({
+        foo: [[1], [3], [9]],
+      });
+    });
   });
 });

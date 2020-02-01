@@ -28,7 +28,8 @@ function objectGet (obj, key, def) {
 };
 
 /**
- * Set a nested value on an object
+ * Set a nested value in an object
+ * Supports pushing a new value into an array by using "[]" as the key
  *
  * @param {Object}        obj
  * @param {string|number} key
@@ -53,12 +54,34 @@ function objectSet (obj, key, value) {
 
   let val = obj;
   const last = parts.pop();
-  for (const part of parts) {
-    if (typeof val[part] === 'undefined') {
-      val[part] = {};
+
+  for (let ii = 0; ii < parts.length; ii++) {
+    const part = parts[ii];
+    let nextIsArray = parts[ii + 1] === '[]';
+
+    if (ii + 1 >= parts.length) {
+      nextIsArray = last === '[]';
     }
+
+    if (part === '[]') {
+      const next = nextIsArray ? [] : {};
+      val.push(next);
+      val = next;
+      continue;
+    }
+
+    if (typeof val[part] === 'undefined') {
+      val[part] = nextIsArray ? [] : {};
+    }
+
     val = val[part];
   }
+
+  if (last === '[]') {
+    val.push(value);
+    return obj;
+  }
+
   val[last] = value;
 
   return obj;
