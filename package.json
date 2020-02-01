@@ -1,6 +1,6 @@
 {
   "name": "node-helpers",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "My node helpers functions",
   "main": "index.js",
   "repository": "git@github.com:alesbolka/node-helpers.git",

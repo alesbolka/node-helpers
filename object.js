@@ -52,7 +52,7 @@ function objectSet (obj, key, value) {
   const parts = typeof key === 'string' ? key.split('.') : [key];
 
   let val = obj;
-  let last = parts.pop();
+  const last = parts.pop();
   for (const part of parts) {
     if (typeof val[part] === 'undefined') {
       val[part] = {};

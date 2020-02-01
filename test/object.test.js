@@ -1,72 +1,72 @@
 const { objectGet, objectSet } = require('../object');
 
-describe('test/object.test.js', function() {
-  describe('Object GET', function() {
+describe('test/object.test.js', function () {
+  describe('Object GET', function () {
     const obj = {
       foo: 'bar',
       bar: {
         baz: [{ x: 2 }, { x: 3 }],
-        stuff: undefined
+        stuff: undefined,
       },
-      '3.7': 4
+      3.7: 4,
     };
 
-    it('fetches a property directly from an object', function() {
+    it('fetches a property directly from an object', function () {
       expect(objectGet(obj, 'foo')).to.equal('bar');
     });
 
-    it('can fetch a nested property', function() {
+    it('can fetch a nested property', function () {
       expect(objectGet(obj, 'bar.baz.1.x')).to.equal(3);
     });
 
-    it('returns undefined by default when no property is found', function() {
+    it('returns undefined by default when no property is found', function () {
       expect(objectGet(obj, 'foo.bar.baz.1.x')).to.equal(undefined);
     });
 
-    it('returns provided default value if none is found', function() {
+    it('returns provided default value if none is found', function () {
       expect(objectGet(obj, 'foo.bar.baz.1.x', 42)).to.equal(42);
     });
 
-    it('returns provided default when value is set to undefined', function() {
+    it('returns provided default when value is set to undefined', function () {
       expect(objectGet(obj, 'bar.stuff', 42)).to.equal(42);
     });
 
-    it('can handle floats', function() {
+    it('can handle floats', function () {
       // This should be avoided at all costs
       expect(objectGet(obj, 3.7)).to.equal(4);
     });
 
-    it('can fetch values from an array', function() {
+    it('can fetch values from an array', function () {
       expect(objectGet(['a', 'b', 'c', 'd'], 2)).to.equal('c');
     });
 
-    it('returns the default value when key is not a string or number', function() {
+    it('returns the default value when key is not a string or number', function () {
       expect(objectGet(obj, [1, 2, 3], 2)).to.equal(2);
     });
   });
 
-  describe('Object SET', function() {
-    it('can set a first level value', function() {
+  describe('Object SET', function () {
+    it('can set a first level value', function () {
       const src = {};
       expect(objectSet(src, 'foo', 2)).to.deep.equal({ foo: 2 });
       expect(src).to.deep.equal({ foo: 2 });
     });
 
-    it('will set a nested value', function() {
+    it('will set a nested value', function () {
       const src = {
         foo: {
-          bar: 'baz'
-        }
+          bar: 'baz',
+        },
       };
       expect(objectSet(src, 'foo.bar', 2)).to.deep.equal({ foo: { bar: 2 } });
       expect(src).to.deep.equal({ foo: { bar: 2 } });
     });
 
-    it('will set up new objects to set nested value', function() {
+    it('will set up new objects to set nested value', function () {
       const src = {
         foo: {
-          bar: 'baz'
-        }
+          bar: 'baz',
+        },
       };
       const expected = { foo: { bar: 'baz' }, x: { y: { z: { a: 2 } } } };
       expect(objectSet(src, 'x.y.z.a', 2)).to.deep.equal(expected);
@@ -74,7 +74,7 @@ describe('test/object.test.js', function() {
     });
 
     it('will throw an error when using a non-string non-number key', function () {
-      expect(() => objectSet({}, [1,2,3], 2))
+      expect(() => objectSet({}, [1, 2, 3], 2))
         .to.throw('Key passed to objectSet must be string or number');
     });
 
@@ -89,8 +89,8 @@ describe('test/object.test.js', function() {
     });
 
     it('is able to set a numeric key', function () {
-      expect(objectSet({}, 2, 3)).to.deep.equal({ '2': 3 });
-      expect(objectSet({}, 'a.2', 3)).to.deep.equal({ a: { '2': 3 } });
+      expect(objectSet({}, 2, 3)).to.deep.equal({ 2: 3 });
+      expect(objectSet({}, 'a.2', 3)).to.deep.equal({ a: { 2: 3 } });
     });
   });
 });
